@@ -18,20 +18,23 @@ public class ObjectCreator {
 		System.out.print(" > ");
 		String input;
 		while ((input = buffRead.readLine()) != null){
-			//String input = buffRead.readLine();
 			if (input.equals("1") || input.equals("(1)")){
 				
 				break;
 			}else if (input.equals("2") || input.equals("(2)")){
+				
 				break;
 			}
 			else if (input.equals("3") || input.equals("(3)")){
+				
 				break;
 			}
 			else if (input.equals("4") || input.equals("(4)")){
+				
 				break;
 			}
 			else if (input.equals("5") || input.equals("(5)")){
+				
 				break;
 			}
 			else{

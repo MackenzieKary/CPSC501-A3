@@ -49,6 +49,7 @@ public class ObjectCreator {
 					input = buffRead.readLine();
 					createdObj.characterArray[i] = input.charAt(0);
 				}	
+				objToSend = createdObj;
 				break;
 			}
 			else if (input.equals("4") || input.equals("(4)")){

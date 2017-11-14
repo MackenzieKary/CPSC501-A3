@@ -18,6 +18,8 @@ public class Serializer {
 		// Create an object element
 		Element objectElement = new Element("object");
 		System.out.println("Created object element");
+		
+		System.out.println("obj is null?" + obj);
 		objectElement.setAttribute("class", obj.getClass().getName());
 		objectElement.setAttribute("id", Integer.toString(hashMap.size()-1)); ////// **** <----- this was the source of the crashing. Needed to put -1 for size, because size was already incremented above. 
 		

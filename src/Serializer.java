@@ -5,6 +5,7 @@ import java.util.IdentityHashMap;
 public class Serializer {
 
 	public static Document serialize(Object obj) throws IllegalArgumentException, IllegalAccessException{
+		System.out.println("In serializer");
 		Document doc = new Document(new Element("serialized"));
 		IdentityHashMap hashMap = new IdentityHashMap();
 		
@@ -36,8 +37,8 @@ public class Serializer {
 						// Primitive field 
 						fieldElement.addContent(new Element("value").setText(fieldObject.toString()));
 					}else{
-						Element referenceElement = new Element("reference");
 						// Reference field
+						Element referenceElement = new Element("reference");
 						if(hashMap.containsKey(fieldObject)){
 							referenceElement.setText(hashMap.get(fieldObject).toString());
 						}else{
@@ -49,14 +50,10 @@ public class Serializer {
 					}
 				}else{
 					fieldElement.addContent(new Element("null"));
-				}
-				
-				
-				
-				
+				}			
 			}
 
 		}		
-		return null;
+		return doc;
 	}
 }

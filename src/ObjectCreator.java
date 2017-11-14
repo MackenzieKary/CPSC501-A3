@@ -1,11 +1,19 @@
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import org.jdom2.Document;
+import org.jdom2.output.XMLOutputter;
+
+import java.io.*;
 
 public class ObjectCreator {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, IllegalArgumentException, IllegalAccessException {
 		// TODO Auto-generated method stub
 		Object objToSend = null;
 		System.out.println("Choose an object to create:");
@@ -57,6 +65,41 @@ public class ObjectCreator {
 				System.out.print(" > ");
 			}
 		}
+		Document doc = Serializer.serialize(objToSend);
+		System.out.println("After serializer");
+//			XMLOutputter outputXML = new XMLOutputter();
+//			outputXML.output(doc, new FileOutputStream("docToSend.xml"));
+
+		System.out.println("Doc: " + doc);
+		new XMLOutputter().output(doc, new FileOutputStream("docToSend.xml"));
+		System.out.println("After XMLOutputter");
+		
+		/*
+		 * Start of network connection part
+		 * 
+		 * XML object should be created as new file at this point and called "docToSend.xml"
+		 * 
+		 */
+		
+		int port = 9999; // create the port number (accepting end will need same port number)
+		ServerSocket serverSocket = new ServerSocket(port);
+		System.out.println("Listening...");
+		Socket connectedSocket = serverSocket.accept();
+		System.out.println("Connection Aquired");
+		
+		File fileToSend = new File("docToSend.xml");		// Turn XMLOuputter file into File type
+		int fileToSendLength = (int) fileToSend.length();
+		//byte[] buffer = new byte[fileToSendLength];
+		int count;
+		byte[] buffer = new byte[1024];
+
+		OutputStream out = connectedSocket.getOutputStream();
+		BufferedInputStream in = new BufferedInputStream(new FileInputStream("docToSend.xml"));
+		while ((count = in.read(buffer)) > 0) {
+			  out.write(buffer, 0, count);
+		}
+			  connectedSocket.close();
+			
 	}
 	public static void setSimpleObject(Object obj) throws IOException{
 		// Set the field values of this class using reflection

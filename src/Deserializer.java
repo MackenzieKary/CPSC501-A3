@@ -10,12 +10,13 @@ import java.net.UnknownHostException;
 public class Deserializer {
 
 	public static void main(String[] args) throws UnknownHostException, IOException{
-		ServerSocket ss = new ServerSocket(9999);
-		
+		ServerSocket ss = new ServerSocket(9998);
+		System.out.println("Before accept");
 		Socket s = ss.accept();
-		
+		System.out.println("After accept");
 		DataInputStream dis = new DataInputStream(s.getInputStream());
-		
+		System.out.println("After DIS");
+		System.out.println("Dis = " + dis);
 		System.out.println(dis.readUTF());
 	}
 }

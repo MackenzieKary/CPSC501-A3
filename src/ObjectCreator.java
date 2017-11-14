@@ -81,24 +81,26 @@ public class ObjectCreator {
 		 * 
 		 */
 		
-		int port = 9999; // create the port number (accepting end will need same port number)
-		ServerSocket serverSocket = new ServerSocket(port);
+		int port = 9998; 	// create the port number (accepting end will need same port number)
+		//ServerSocket serverSocket = new ServerSocket(port);
+		Socket connectedSocket = new Socket("localhost", 9998);
 		System.out.println("Listening...");
-		Socket connectedSocket = serverSocket.accept();
+		//Socket connectedSocket = serverSocket.accept();
 		System.out.println("Connection Aquired");
 		
 		File fileToSend = new File("docToSend.xml");		// Turn XMLOuputter file into File type
 		int fileToSendLength = (int) fileToSend.length();
 		//byte[] buffer = new byte[fileToSendLength];
 		int count;
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[fileToSendLength];
 
 		OutputStream out = connectedSocket.getOutputStream();
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream("docToSend.xml"));
+		
 		while ((count = in.read(buffer)) > 0) {
 			  out.write(buffer, 0, count);
 		}
-			  connectedSocket.close();
+		connectedSocket.close();
 			
 	}
 	public static void setSimpleObject(Object obj) throws IOException{

@@ -47,7 +47,9 @@ public class Deserializer {
 		
 		Document document  = saxBuilder.build(inputFile);
 		
-		deserialize(document); 
+		Object obj = deserialize(document); 
+		
+		System.out.println("Object = " + obj);
 	}
 	
 	public static Object deserialize(Document document) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, NoSuchFieldException{
@@ -71,6 +73,7 @@ public class Deserializer {
 			Attribute objectAttribute = objectElement.getAttribute("id");
 			mapOfObjects.put(objectAttribute.getValue(), classInstance);
 			
+			System.out.println("mapOfObjects: " + mapOfObjects.get("0"));
 			
 			// Now set the field values for the classes
 			List<Element> fieldElementList = objectElement.getChildren();
@@ -89,50 +92,35 @@ public class Deserializer {
 					System.out.println("Field name = " + field.getName());
 					if (fieldValue.getName().equals("value")){
 						// Primitive field type
-						System.out.println("\tIs equal to value");
+						System.out.println("-Is a value");
 						if(field.getType().getName().equals("boolean")){
-							System.out.println("\t\tIs boolean");
+							System.out.println("--Type boolean");
 							if(fieldValue.getText().equals("true")){
 								field.set(classInstance, Boolean.TRUE);
 							}else{
 								field.set(classInstance, Boolean.FALSE);
 							}
 						}else if(field.getType().getName().equals("int")){
-							System.out.println("\t\tIs int");
+							System.out.println("--Type int");
 							field.set(classInstance, Integer.valueOf(fieldValue.getText()));
 						}else if(field.getType().getName().equals("char")){
-							System.out.println("\t\tIs char");
+							System.out.println("--Type char");
 							field.set(classInstance, new Character(fieldValue.getText().charAt(0)));
 						}
 					}else if(fieldValue.getName().equals("reference")){
-						System.out.println("\tIs equal to reference");
-						field.set(classInstance, fieldValue.getText());
+						System.out.println("-Is a reference");
+						field.set(classInstance, mapOfObjects.get(fieldValue.getText()));
 					}else if(fieldValue.getName().equals("null")){
-						System.out.println("\tIs equal to null");
+						System.out.println("-Is null");
 						field.set(classInstance, null);
 					}
 				}
 			}
 		} 
 		 
+		System.out.println("mapOfObjects index 0 = " + mapOfObjects.get("0"));
+		System.out.println("mapOfObjects size? = " + mapOfObjects.size());
+		return mapOfObjects.get("1");
 		
-		
-		
-		/* EXAMPLE FROM TUTORIAL:
-		 * 	Element classElement = document.getRootElement();			
-			List<Element> studentList = classElement.getChildren();
-			System.out.println("------------------------");
-			
-			for(int i = 0; i < studentList.size(); i++){
-				Element student = studentList.get(i);
-				System.out.println("\nCurrent Element: "+ student.getName());
-				Attribute attribute = student.getAttribute("id");
-				System.out.println("Student id: " +attribute.getValue());
-				System.out.println("First name: "+ student.getChild("firstName").getText());
-				System.out.println("Last name: "+ student.getChild("lastName").getText());
-				System.out.println("Grade: "+ student.getChild("marks").getText());			
-			}
-		 */
-		return null;
 	}
 }

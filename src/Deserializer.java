@@ -50,6 +50,8 @@ public class Deserializer {
 		Object obj = deserialize(document); 
 		
 		System.out.println("Object = " + obj);
+		
+		
 	}
 	
 	public static Object deserialize(Document document) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, NoSuchFieldException{
@@ -73,7 +75,12 @@ public class Deserializer {
 			Attribute objectAttribute = objectElement.getAttribute("id");
 			mapOfObjects.put(objectAttribute.getValue(), classInstance);
 			
-			System.out.println("mapOfObjects: " + mapOfObjects.get("0"));
+			
+			/// I think all this needs to be completed before we can move on to the field values. All instances need to be made.
+			
+			
+			
+			System.out.println("mapOfObjects: " + mapOfObjects.get("1"));
 			
 			// Now set the field values for the classes
 			List<Element> fieldElementList = objectElement.getChildren();
@@ -85,6 +92,8 @@ public class Deserializer {
 				for (Element fieldElement : fieldElementList){
 					Class declaringClass = Class.forName(fieldElement.getAttributeValue("declaringclass"));
 					Field field = declaringClass.getDeclaredField(fieldElement.getAttributeValue("name"));
+					System.out.println("Field: " + field.getName());
+					System.out.println(fieldElement.getChildren().size());
 					
 					Element fieldValue = fieldElement.getChildren().get(0);
 					
@@ -118,8 +127,7 @@ public class Deserializer {
 			}
 		} 
 		 
-		System.out.println("mapOfObjects index 0 = " + mapOfObjects.get("0"));
-		System.out.println("mapOfObjects size? = " + mapOfObjects.size());
+		System.out.println("mapOfObjects index 0 = " + mapOfObjects.get("1"));
 		return mapOfObjects.get("1");
 		
 	}

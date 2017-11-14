@@ -9,7 +9,12 @@ public class Serializer {
 		Document doc = new Document(new Element("serialized"));
 		IdentityHashMap hashMap = new IdentityHashMap();
 		
+		
 		hashMap.put(obj, Integer.toString(hashMap.size()));
+		
+		return recurseSerialize(obj, hashMap, doc);
+	}
+	public static Document recurseSerialize(Object obj, IdentityHashMap hashMap, Document doc) throws IllegalArgumentException, IllegalAccessException{
 		
 		// Create an object element
 		Element objectElement = new Element("object");
@@ -34,12 +39,16 @@ public class Serializer {
 				fieldElement.setAttribute("declaringclass", classField.getDeclaringClass().getName());
 				
 				Object fieldObject = classField.get(obj);
+
+				
 				if (fieldObject != null){
 					if (classField.getType().isPrimitive()){
 						// Primitive field 
+						System.out.println("Is primitive type");
 						fieldElement.addContent(new Element("value").setText(fieldObject.toString()));
 					}else{
 						// Reference field
+						System.out.println("Is reference type");
 						Element referenceElement = new Element("reference");
 						if(hashMap.containsKey(fieldObject)){
 							referenceElement.setText(hashMap.get(fieldObject).toString());
@@ -47,10 +56,12 @@ public class Serializer {
 							// Not yet saved in identity hashMap
 							referenceElement.setText(Integer.toString(hashMap.size()));
 							// Need to change method to allow for recursion for reference values
+							recurseSerialize(fieldObject, hashMap, doc);
 						}
 						
 					}
 				}else{
+					System.out.println("Is null type");
 					fieldElement.addContent(new Element("null"));
 				}	
 				objectElement.addContent(fieldElement);

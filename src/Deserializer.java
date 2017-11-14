@@ -89,21 +89,27 @@ public class Deserializer {
 					System.out.println("Field name = " + field.getName());
 					if (fieldValue.getName().equals("value")){
 						// Primitive field type
-						System.out.println("Is equal to value");
+						System.out.println("\tIs equal to value");
 						if(field.getType().getName().equals("boolean")){
-							System.out.println("Is boolean");
-							
+							System.out.println("\t\tIs boolean");
+							if(fieldValue.getText().equals("true")){
+								field.set(classInstance, Boolean.TRUE);
+							}else{
+								field.set(classInstance, Boolean.FALSE);
+							}
 						}else if(field.getType().getName().equals("int")){
-							System.out.println("Is int");
-							
+							System.out.println("\t\tIs int");
+							field.set(classInstance, Integer.valueOf(fieldValue.getText()));
 						}else if(field.getType().getName().equals("char")){
-							System.out.println("Is char");
-							
+							System.out.println("\t\tIs char");
+							field.set(classInstance, new Character(fieldValue.getText().charAt(0)));
 						}
 					}else if(fieldValue.getName().equals("reference")){
-						System.out.println("Is equal to reference");
+						System.out.println("\tIs equal to reference");
+						field.set(classInstance, fieldValue.getText());
 					}else if(fieldValue.getName().equals("null")){
-						System.out.println("Is equal to null");
+						System.out.println("\tIs equal to null");
+						field.set(classInstance, null);
 					}
 				}
 			}

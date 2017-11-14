@@ -25,6 +25,19 @@ public class Serializer {
 		
 		if(obj.getClass().isArray()){
 			System.out.println("Is array");
+			
+			//TODO: Logic for if it is an array. Need to have the form:
+			/*
+			 * <object class=”[C” id=”8” length=”5”>
+					<value>S</value>
+					<value>m</value>
+					<value>i</value>
+					<value>t</value>
+					<value>h</value>
+				</object>
+
+			 */
+			
 		}else{
 			System.out.println("Is not array");
 			

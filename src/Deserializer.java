@@ -74,16 +74,22 @@ public class Deserializer {
 			}
 			Attribute objectAttribute = objectElement.getAttribute("id");
 			mapOfObjects.put(objectAttribute.getValue(), classInstance);
-			
+			System.out.println("Put instance in map: "+ objectAttribute.getValue());
 			
 			/// I think all this needs to be completed before we can move on to the field values. All instances need to be made.
+			// Take the stuff before, and put it outside of the first for loop.
 			
 			
 			
 			System.out.println("mapOfObjects: " + mapOfObjects.get("1"));
 			
-			// Now set the field values for the classes
-			List<Element> fieldElementList = objectElement.getChildren();
+		} 
+	// Now set the field values for the classes
+		
+		for(Element objectElement : classObjectList){
+			Object classInstance = mapOfObjects.get(objectElement.getAttributeValue("id"));
+			List<Element> fieldElementList = objectElement.getChildren(); 
+			
 			if (classInstance.getClass().isArray()){
 				// Is an array
 				
@@ -93,9 +99,8 @@ public class Deserializer {
 					Class declaringClass = Class.forName(fieldElement.getAttributeValue("declaringclass"));
 					Field field = declaringClass.getDeclaredField(fieldElement.getAttributeValue("name"));
 					System.out.println("Field: " + field.getName());
-					System.out.println(fieldElement.getChildren().size());
 					
-					Element fieldValue = fieldElement.getChildren().get(0);
+					Element fieldValue = (Element) fieldElement.getChildren().get(0);
 					
 					// Set value for the field
 					System.out.println("Field name = " + field.getName());
@@ -119,13 +124,14 @@ public class Deserializer {
 					}else if(fieldValue.getName().equals("reference")){
 						System.out.println("-Is a reference");
 						field.set(classInstance, mapOfObjects.get(fieldValue.getText()));
+						
 					}else if(fieldValue.getName().equals("null")){
 						System.out.println("-Is null");
 						field.set(classInstance, null);
 					}
 				}
-			}
-		} 
+			}		
+		}
 		 
 		System.out.println("mapOfObjects index 0 = " + mapOfObjects.get("1"));
 		return mapOfObjects.get("1");

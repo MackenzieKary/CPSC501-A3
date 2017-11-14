@@ -10,17 +10,16 @@ public class Serializer {
 		IdentityHashMap hashMap = new IdentityHashMap();
 		
 		
-		hashMap.put(obj, Integer.toString(hashMap.size()));
 		
 		return recurseSerialize(obj, hashMap, doc);
 	}
 	public static Document recurseSerialize(Object obj, IdentityHashMap hashMap, Document doc) throws IllegalArgumentException, IllegalAccessException{
-		
+		hashMap.put(obj, Integer.toString(hashMap.size()));
 		// Create an object element
 		Element objectElement = new Element("object");
 		System.out.println("Created object element");
 		objectElement.setAttribute("class", obj.getClass().getName());
-		objectElement.setAttribute("id", Integer.toString(hashMap.size()));
+		objectElement.setAttribute("id", Integer.toString(hashMap.size()-1)); ////// **** <----- this was the source of the crashing. Needed to put -1 for size, because size was already incremented above. 
 		
 		doc.getRootElement().addContent(objectElement);
 		
@@ -58,6 +57,8 @@ public class Serializer {
 							// Need to change method to allow for recursion for reference values
 							recurseSerialize(fieldObject, hashMap, doc);
 						}
+						fieldElement.addContent(referenceElement);
+						//objectElement.addContent(referenceElement);
 						
 					}
 				}else{

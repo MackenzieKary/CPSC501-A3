@@ -41,10 +41,10 @@ public class ObjectCreator {
 			else if (input.equals("3") || input.equals("(3)")){
 				ClassC createdObj = new ClassC();
 				createdObj.characterArray = new char[10];
-				
+				System.out.println("Creating character array");
 				for(int i = 0; i < createdObj.characterArray.length; i++){
-					System.out.printf("Set index %d value:\n", i);
-					System.out.println(" > ");
+					System.out.printf("Set character for index %d:\n", i);
+					System.out.print(" > ");
 					
 					input = buffRead.readLine();
 					createdObj.characterArray[i] = input.charAt(0);

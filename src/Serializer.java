@@ -38,6 +38,40 @@ public class Serializer {
 
 			 */
 			
+			objectElement.setAttribute("length", Integer.toString(Array.getLength(obj)));
+			Class arrayType = obj.getClass().getComponentType();
+			for (int i=0; i < Array.getLength(obj); i++){
+				Object subObj = Array.get(obj, i);
+				
+				// Almost identical duplicate code from below, could extract into its own method
+				if (subObj != null){
+					if (arrayType.isPrimitive()){
+						// Primitive field 
+						System.out.println("Is primitive type");
+						objectElement.addContent(new Element("value").setText(subObj.toString()));
+					}else{
+						// Reference field
+						System.out.println("Is reference type");
+						Element referenceElement = new Element("reference");
+						if(hashMap.containsKey(subObj)){
+							referenceElement.setText(hashMap.get(subObj).toString());
+						}else{
+							// Not yet saved in identity hashMap
+							referenceElement.setText(Integer.toString(hashMap.size()));
+							// Need to change method to allow for recursion for reference values
+							recurseSerialize(subObj, hashMap, doc);
+						}
+						objectElement.addContent(referenceElement);
+						//objectElement.addContent(referenceElement);
+						
+					}
+				}else{
+					System.out.println("Is null type");
+					objectElement.addContent(new Element("null"));
+				}
+			}
+			
+			
 		}else{
 			System.out.println("Is not array");
 			

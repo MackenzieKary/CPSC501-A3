@@ -13,20 +13,22 @@ public class Serializer {
 		
 		// Create an object element
 		Element objectElement = new Element("object");
+		System.out.println("Created object element");
 		objectElement.setAttribute("class", obj.getClass().getName());
 		objectElement.setAttribute("id", Integer.toString(hashMap.size()));
 		
 		doc.getRootElement().addContent(objectElement);
 		
 		if(obj.getClass().isArray()){
-			
+			System.out.println("Is array");
 		}else{
+			System.out.println("Is not array");
+			
 			Class reflectClass = obj.getClass();
 			Field[] classFields = reflectClass.getDeclaredFields();
 			System.out.println("\nField info below for: " + reflectClass);
 			for (Field classField : classFields){
 				classField.setAccessible(true);
-				
 				Element fieldElement = new Element("field");
 				fieldElement.setAttribute("name", classField.getName());
 				fieldElement.setAttribute("declaringclass", classField.getDeclaringClass().getName());
@@ -50,7 +52,8 @@ public class Serializer {
 					}
 				}else{
 					fieldElement.addContent(new Element("null"));
-				}			
+				}	
+				objectElement.addContent(fieldElement);
 			}
 
 		}		

@@ -1,44 +1,29 @@
 import org.jdom2.*;
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 
 public class Serializer {
 
 	public static Document serialize(Object obj) throws IllegalArgumentException, IllegalAccessException{
-		System.out.println("In serializer");
 		Document doc = new Document(new Element("serialized"));
 		IdentityHashMap hashMap = new IdentityHashMap();
-		
-		
-		
 		return recurseSerialize(obj, hashMap, doc);
 	}
 	public static Document recurseSerialize(Object obj, IdentityHashMap hashMap, Document doc) throws IllegalArgumentException, IllegalAccessException{
-		hashMap.put(obj, Integer.toString(hashMap.size()));
+		String id = Integer.toString(hashMap.size());
+		hashMap.put(obj, id);
 		// Create an object element
 		Element objectElement = new Element("object");
-		System.out.println("Created object element");
 		
-		System.out.println("obj is null?" + obj);
 		objectElement.setAttribute("class", obj.getClass().getName());
-		objectElement.setAttribute("id", Integer.toString(hashMap.size()-1)); ////// **** <----- this was the source of the crashing. Needed to put -1 for size, because size was already incremented above. 
+		objectElement.setAttribute("id", id); ////// **** <----- this was the source of the crashing. Needed to put -1 for size, because size was already incremented above. 
 		
 		doc.getRootElement().addContent(objectElement);
 		
 		if(obj.getClass().isArray()){
 			System.out.println("Is array");
-			
-			//TODO: Logic for if it is an array. Need to have the form:
-			/*
-			 * <object class=”[C” id=”8” length=”5”>
-					<value>S</value>
-					<value>m</value>
-					<value>i</value>
-					<value>t</value>
-					<value>h</value>
-				</object>
-
-			 */
 			
 			objectElement.setAttribute("length", Integer.toString(Array.getLength(obj)));
 			Class arrayType = obj.getClass().getComponentType();
@@ -77,17 +62,32 @@ public class Serializer {
 		}else{
 			System.out.println("Is not array");
 			
-			Class reflectClass = obj.getClass();
-			Field[] classFields = reflectClass.getDeclaredFields();
+			Class reflectClass = obj.getClass();			
+			
+			//Field[] classFields = reflectClass.getDeclaredFields();
+			
+			List validFields = new ArrayList();
+			Field[] fields = reflectClass.getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) {
+				if (!Modifier.isStatic(fields[i].getModifiers())) {
+					validFields.add(fields[i]);
+				}
+			}	
+			Field[] classFields = (Field[]) validFields.toArray(new Field[validFields.size()]);
+
 			System.out.println("\nField info below for: " + reflectClass);
 			for (Field classField : classFields){
 				classField.setAccessible(true);
+				
 				Element fieldElement = new Element("field");
 				fieldElement.setAttribute("name", classField.getName());
 				fieldElement.setAttribute("declaringclass", classField.getDeclaringClass().getName());
 				
 				Object fieldObject = classField.get(obj);
-
+				// From textbook (if statement)
+				if (Modifier.isTransient(classField.getModifiers())) { 
+					fieldObject = null; 
+				} 
 				
 				if (fieldObject != null){
 					if (classField.getType().isPrimitive()){
@@ -107,8 +107,6 @@ public class Serializer {
 							recurseSerialize(fieldObject, hashMap, doc);
 						}
 						fieldElement.addContent(referenceElement);
-						//objectElement.addContent(referenceElement);
-						
 					}
 				}else{
 					System.out.println("Is null type");

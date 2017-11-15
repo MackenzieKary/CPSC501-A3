@@ -1,18 +1,19 @@
 import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.*;
+
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -51,6 +52,10 @@ public class Deserializer {
 		
 		System.out.println("Object = " + obj);
 		
+		Visualizer visualizer = new Visualizer();
+		boolean recursive =  false;
+		visualizer.visualize(obj, recursive);
+		
 		
 	}
 	
@@ -58,6 +63,7 @@ public class Deserializer {
 		Element classElement = document.getRootElement();	
 		List<Element> classObjectList = classElement.getChildren();
 		HashMap mapOfObjects = new HashMap();
+		
 		for(Element objectElement : classObjectList){
 			Class objClass = Class.forName(objectElement.getAttributeValue("class"));
 			Object classInstance = null;
@@ -69,8 +75,13 @@ public class Deserializer {
 				classInstance = Array.newInstance(objClass.getComponentType(), length);
 			}else{
 				// Just a single class, instantiate it
-				
-				classInstance = objClass.getDeclaredConstructor(null).newInstance(null); 
+				// >>>
+				Constructor c = objClass.getDeclaredConstructor(null);
+				if (!Modifier.isPublic(c.getModifiers()))
+					c.setAccessible(true);
+				classInstance = c.newInstance(null);
+				// <<<
+				//classInstance = objClass.getDeclaredConstructor(null).newInstance(null); 
 			}
 			Attribute objectAttribute = objectElement.getAttribute("id");
 			mapOfObjects.put(objectAttribute.getValue(), classInstance);
@@ -81,7 +92,7 @@ public class Deserializer {
 			
 			
 			
-			System.out.println("mapOfObjects: " + mapOfObjects.get("1"));
+			System.out.println("mapOfObjects: " + mapOfObjects.get("0"));
 			
 		} 
 	// Now set the field values for the classes
@@ -91,13 +102,49 @@ public class Deserializer {
 			List<Element> fieldElementList = objectElement.getChildren(); 
 			
 			if (classInstance.getClass().isArray()){
+				System.out.println("is an array");
 				// Is an array
-				
+				for (int i = 0; i < fieldElementList.size(); i++){
+					Element fieldElement = fieldElementList.get(i);
+					
+					
+					// Set value for the field
+					if (fieldElement.getName().equals("value")){
+						// Primitive field type
+						System.out.println("-Is a value");
+						if(classInstance.getClass().getComponentType().getName().equals("boolean")){
+							System.out.println("--Type boolean");
+							if(fieldElement.getText().equals("true")){
+								Array.set(classInstance, i , Boolean.TRUE);
+							}else{
+								Array.set(classInstance, i , Boolean.FALSE);
+							}
+						}else if(classInstance.getClass().getComponentType().getName().equals("int")){
+							System.out.println("--Type int");
+							Array.set(classInstance, i , Integer.valueOf(fieldElement.getText()));
+						}else if(classInstance.getClass().getComponentType().getName().equals("char")){
+							System.out.println("--Type char");
+							Array.set(classInstance, i , new Character(fieldElement.getText().charAt(0)));
+						}else{
+							Array.set(classInstance, i, fieldElement);
+						}
+					}else if(fieldElement.getName().equals("reference")){
+						System.out.println("-Is an array reference");
+						Array.set(classInstance, i , mapOfObjects.get(fieldElement.getText()));
+						
+					}else if(fieldElement.getName().equals("null")){
+						System.out.println("-Is null");
+						Array.set(classInstance, i , null);
+					}
+					
+					
+				}
 			}else{
 				// Not an array, so get fields to set their values for class
 				for (Element fieldElement : fieldElementList){
 					Class declaringClass = Class.forName(fieldElement.getAttributeValue("declaringclass"));
 					Field field = declaringClass.getDeclaredField(fieldElement.getAttributeValue("name"));
+					field.setAccessible(true);
 					System.out.println("Field: " + field.getName());
 					
 					Element fieldValue = (Element) fieldElement.getChildren().get(0);
@@ -133,8 +180,8 @@ public class Deserializer {
 			}		
 		}
 		 
-		System.out.println("mapOfObjects index 0 = " + mapOfObjects.get("1"));
-		return mapOfObjects.get("1");
+		System.out.println("mapOfObjects index 0 = " + mapOfObjects.get("0"));
+		return mapOfObjects.get("0");
 		
 	}
 }

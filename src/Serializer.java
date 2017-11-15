@@ -18,7 +18,7 @@ public class Serializer {
 		Element objectElement = new Element("object");
 		
 		objectElement.setAttribute("class", obj.getClass().getName());
-		objectElement.setAttribute("id", id); ////// **** <----- this was the source of the crashing. Needed to put -1 for size, because size was already incremented above. 
+		objectElement.setAttribute("id", id); 
 		
 		doc.getRootElement().addContent(objectElement);
 		
@@ -56,15 +56,12 @@ public class Serializer {
 			
 			
 		}else{
-			
 			Class reflectClass = obj.getClass();			
-			
-			//Field[] classFields = reflectClass.getDeclaredFields();
-			
 			List validFields = new ArrayList();
 			Field[] fields = reflectClass.getDeclaredFields();
 			for (int i = 0; i < fields.length; i++) {
 				if (!Modifier.isStatic(fields[i].getModifiers())) {
+					// Do no add static fields
 					validFields.add(fields[i]);
 				}
 			}	

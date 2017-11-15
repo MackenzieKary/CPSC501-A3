@@ -23,7 +23,6 @@ public class Serializer {
 		doc.getRootElement().addContent(objectElement);
 		
 		if(obj.getClass().isArray()){
-			System.out.println("Is array");
 			
 			objectElement.setAttribute("length", Integer.toString(Array.getLength(obj)));
 			Class arrayType = obj.getClass().getComponentType();
@@ -34,11 +33,9 @@ public class Serializer {
 				if (subObj != null){
 					if (arrayType.isPrimitive()){
 						// Primitive field 
-						System.out.println("Is primitive type");
 						objectElement.addContent(new Element("value").setText(subObj.toString()));
 					}else{
 						// Reference field
-						System.out.println("Is reference type");
 						Element referenceElement = new Element("reference");
 						if(hashMap.containsKey(subObj)){
 							referenceElement.setText(hashMap.get(subObj).toString());
@@ -53,14 +50,12 @@ public class Serializer {
 						
 					}
 				}else{
-					System.out.println("Is null type");
 					objectElement.addContent(new Element("null"));
 				}
 			}
 			
 			
 		}else{
-			System.out.println("Is not array");
 			
 			Class reflectClass = obj.getClass();			
 			
@@ -75,7 +70,6 @@ public class Serializer {
 			}	
 			Field[] classFields = (Field[]) validFields.toArray(new Field[validFields.size()]);
 
-			System.out.println("\nField info below for: " + reflectClass);
 			for (Field classField : classFields){
 				classField.setAccessible(true);
 				
@@ -92,11 +86,9 @@ public class Serializer {
 				if (fieldObject != null){
 					if (classField.getType().isPrimitive()){
 						// Primitive field 
-						System.out.println("Is primitive type");
 						fieldElement.addContent(new Element("value").setText(fieldObject.toString()));
 					}else{
 						// Reference field
-						System.out.println("Is reference type");
 						Element referenceElement = new Element("reference");
 						if(hashMap.containsKey(fieldObject)){
 							referenceElement.setText(hashMap.get(fieldObject).toString());
@@ -109,7 +101,6 @@ public class Serializer {
 						fieldElement.addContent(referenceElement);
 					}
 				}else{
-					System.out.println("Is null type");
 					fieldElement.addContent(new Element("null"));
 				}	
 				objectElement.addContent(fieldElement);

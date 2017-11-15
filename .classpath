@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="/Users/mackenziekary/Downloads/jdom-2.0.6/jdom-2.0.6-sources.jar"/>
 	<classpathentry kind="lib" path="/Users/mackenziekary/Downloads/jdom-2.0.6/jdom-2.0.6-contrib.jar"/>
 	<classpathentry kind="lib" path="/Users/mackenziekary/Downloads/jdom-2.0.6/jdom-2.0.6-javadoc.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

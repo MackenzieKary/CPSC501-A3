@@ -19,6 +19,7 @@ public class ObjectCreator {
 						+ "(4) Object containing array of references to other objects \n"
 						+ "(5) Object that uses instance of Java's collection classes "
 						+ "to refer to several other classes. ");
+		
 		BufferedReader buffRead = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print(" > ");
 		String input;

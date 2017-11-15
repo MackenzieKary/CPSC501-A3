@@ -3,6 +3,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
 import java.lang.reflect.Array;
 
@@ -54,7 +55,7 @@ public class Visualizer {
 	private void setClassName(String cName){
 		classNameToTest = cName;
 	}
-	private String getClassName(){
+	public String getClassName(){
 		return classNameToTest;
 	}
 	private void setFieldValues(String fValues){
@@ -263,9 +264,9 @@ public class Visualizer {
 						
 						for (int i = 0; i < length; i++) {
 								// Print primitive array value
-							//System.out.println(arrValues.toString());
+							
 							char x = Array.getChar(arrValues, i);
-//							System.out.println();
+
 							System.out.println("\tField Value: "+ x);
 						}			
 					} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -284,7 +285,13 @@ public class Visualizer {
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 				}
-				System.out.println("\t\tField Value ("+reflectClass+"): " + fieldValue);  
+				
+				if (fieldValue.getClass().toString().equals("class java.util.ArrayList")){				
+					System.out.println("\t\tField Value: " + fieldValue.getClass());  
+				}
+				else{
+					System.out.println("\t\tField Value ("+reflectClass+"): " + fieldValue); 
+				}
 				if (recursive){
 					if (fieldValue != null && !fieldValue.getClass().isPrimitive()){
 						setFieldValues(fieldValue.toString());

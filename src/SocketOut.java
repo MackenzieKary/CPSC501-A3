@@ -16,7 +16,7 @@ public class SocketOut {
 
 		System.out.println("Doc: " + doc);
 		new XMLOutputter().output(doc, new FileOutputStream("docToSend.xml"));
-		System.out.println("After XMLOutputter");
+
 		
 		/*
 		 * Start of network connection part

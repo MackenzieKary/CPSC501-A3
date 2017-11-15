@@ -1,10 +1,6 @@
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 import org.jdom2.Document;
 import org.jdom2.output.XMLOutputter;
@@ -12,8 +8,8 @@ import org.jdom2.output.XMLOutputter;
 import java.io.*;
 
 public class ObjectCreator {
-
-	public static void main(String[] args) throws IOException, IllegalArgumentException, IllegalAccessException {
+	static List<Object> objList;
+	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		Object objToSend = null;
 		System.out.println("Choose an object to create:");
@@ -58,7 +54,8 @@ public class ObjectCreator {
 				break;
 			}
 			else if (input.equals("5") || input.equals("(5)")){
-				
+				ClassE createdObj = new ClassE();
+				objToSend = createdObj;
 				break;
 			}
 			else{
@@ -67,9 +64,10 @@ public class ObjectCreator {
 			}
 		}
 		Document doc = Serializer.serialize(objToSend);
-		System.out.println("After serializer");
-//			XMLOutputter outputXML = new XMLOutputter();
-//			outputXML.output(doc, new FileOutputStream("docToSend.xml"));
+
+		sendDoc(doc);		
+	}
+	public static void sendDoc(Document doc) throws FileNotFoundException, IOException{
 
 		System.out.println("Doc: " + doc);
 		new XMLOutputter().output(doc, new FileOutputStream("docToSend.xml"));
@@ -83,15 +81,15 @@ public class ObjectCreator {
 		 */
 		
 		int port = 9998; 	// create the port number (accepting end will need same port number)
-		//ServerSocket serverSocket = new ServerSocket(port);
+
 		Socket connectedSocket = new Socket("localhost", 9998);
 		System.out.println("Listening...");
-		//Socket connectedSocket = serverSocket.accept();
+
 		System.out.println("Connection Aquired");
 		
 		File fileToSend = new File("docToSend.xml");		// Turn XMLOuputter file into File type
 		int fileToSendLength = (int) fileToSend.length();
-		//byte[] buffer = new byte[fileToSendLength];
+;
 		int count;
 		byte[] buffer = new byte[fileToSendLength];
 

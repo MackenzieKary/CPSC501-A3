@@ -8,7 +8,6 @@ public class SocketIn {
 	public static void receiveDoc() throws IOException{
 		ServerSocket ss = new ServerSocket(9998);
 		System.out.println("Open Connection...");
-		//Socket connectedSocket = new Socket("localhost", 9998);
 		Socket connectedSocket = ss.accept();
 		System.out.println("Connection Accepted");
 		byte[] buffer = new byte[99999]; // Set byte array to something large

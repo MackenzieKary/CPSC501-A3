@@ -58,14 +58,8 @@ public class Deserializer {
 				int length = Integer.parseInt(objectElement.getAttributeValue("length"));
 				classInstance = Array.newInstance(objClass.getComponentType(), length);
 			}else{
-				// Just a single class, instantiate it
-				// >>>
-				Constructor c = objClass.getDeclaredConstructor(null);
-				if (!Modifier.isPublic(c.getModifiers()))
-					c.setAccessible(true);
-				classInstance = c.newInstance(null);
-				// <<<
-				//classInstance = objClass.getDeclaredConstructor(null).newInstance(null); 
+
+				classInstance = objClass.getDeclaredConstructor(null).newInstance(null); 
 			}
 			Attribute objectAttribute = objectElement.getAttribute("id");
 			mapOfObjects.put(objectAttribute.getValue(), classInstance);
